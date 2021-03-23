@@ -1,7 +1,3 @@
-branches:
-    label: enhancement
-    name: devel
-
 on:
     issues:
         types: [assigned]
