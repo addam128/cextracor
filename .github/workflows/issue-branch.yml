@@ -14,8 +14,8 @@ jobs:
           uses: robvanderleek/create-issue-branch@master
           with:
             branches:
-                label: enhancement
-                name: devel
+               - label: enhancement
+                 name: devel
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
