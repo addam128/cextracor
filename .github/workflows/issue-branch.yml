@@ -12,10 +12,9 @@ jobs:
         steps:
         - name: Create Issue Branch
           uses: robvanderleek/create-issue-branch@master
-          with:
-            branches:
-               - label: enhancement
-                 name: devel
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+branches:
+    label: enhancement
+    name: devel
