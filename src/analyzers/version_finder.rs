@@ -35,20 +35,20 @@ impl VersionFinder {
         key_map.insert(String::from("sha"), HashSet::new());
         key_map.insert(String::from("java_card"), HashSet::new());
         key_map.insert(String::from("global_platform"), HashSet::new());
-        let instance = 
-        Self {
-            _rsa_regex: Regex::new(r"R(?i)sa(?-i)\s?(-?[A-Z0-9]{2,5})?\s?(-?\s?\d{0,4}?(/\d{0,4})?)?")?,
-            _eal_regex: Regex::new(r"E(?i)al\s?-?\d{1}\s?\+?")?,
-            _ecc_regex: Regex::new(r"(?i)ecc\s?-?\d*")?,
-            _des_regex: Regex::new(r"(?i)(Triple|Double|3-key\s?T?|3|T|2-key\s?T?|Single|SW)?-?\s?Des")?,
-            _sha_regex: Regex::new(r"S(?i)ha\d?\s?(-?\s?\d?/?\d+)?")?,
-            _java_card_regex: Regex::new(r"(?i)java\s?card\s?-?(\d\.?)*")?,
-            _global_platform_regex: Regex::new(r"(?i)global\s?-?platform\s?-?(\d\.?)*")?,
-            _found: key_map,
-            _buffer: String::new(),
-        };
+        Ok(
+            Self {
+                _rsa_regex: Regex::new(r"R(?i)sa(?-i)\s?(-?[A-Z0-9]{2,5})?\s?(-?\s?\d{0,4}?(/\d{0,4})?)?")?,
+                _eal_regex: Regex::new(r"E(?i)al\s?-?\d{1}\s?\+?")?,
+                _ecc_regex: Regex::new(r"(?i)ecc\s?-?\d{0,8}")?,
+                _des_regex: Regex::new(r"(?i)(Triple|Double|3-key\s?T?|3|T|2-key\s?T?|Single|SW)?-?\s?Des")?,
+                _sha_regex: Regex::new(r"S(?i)ha\d?\s?(-?\s?\d?/?\d{1,8})?")?,
+                _java_card_regex: Regex::new(r"(?i)java\s?card\s?-?(\d\.?){0,8}?")?,
+                _global_platform_regex: Regex::new(r"(?i)global\s?-?platform\s?-?(\d\.?){0,8}?")?,
+                _found: key_map,
+                _buffer: String::new(),
+            }
+    )
         
-        Ok(instance)
     }
 }
 
