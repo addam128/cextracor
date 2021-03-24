@@ -1,0 +1,7 @@
+branches:
+  - label: enhacement
+    prefix: feature/
+    name: devel
+  - label: bug
+    prefix: bugfix/
+    name: devel
