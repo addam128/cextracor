@@ -27,13 +27,17 @@ fn process(
     if infile.metadata()?.is_dir() {
         return Err(utils::Error::IsADirectory);
     }
+
+    /* Do for the previous run, if this was at the end of the previous run,
+    it could be omitted due to an Error, and would cause inconsistencies*/
+    analyzers.iter_mut().for_each(|a| a.as_mut().clear());
+
     reader::read_and_process_chunks(infile, analyzers)?;
 
     for analyzer in analyzers.iter_mut() {
             println!("{}", analyzer.finalize()?.pretty(4));
             
     }
-
 
     Ok(())
 }
