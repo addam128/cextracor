@@ -2,6 +2,7 @@ use std::fs::{ OpenOptions, File };
 use std::path::Path;
 use std::io::Read;
 use std::str::from_utf8;
+use std::collections::HashMap;
 
 
 use crate::utils;
@@ -26,7 +27,7 @@ pub(crate) fn open_file<P>(
 
 pub(crate) fn read_and_process_chunks<I>(
     mut input: I,
-    analyzers: &mut Vec< Box<dyn Analyzer> >)
+    analyzers: &mut HashMap< String, Box<dyn Analyzer> >)
     -> Result<(), utils::Error>
     where I: Read,
 {
@@ -42,7 +43,7 @@ pub(crate) fn read_and_process_chunks<I>(
         let chunk_str_slice = from_utf8(&mut buffer[..bytes_read])?;
          
         
-        for analyzer in analyzers.iter_mut() {
+        for analyzer in analyzers.values_mut() {
             analyzer.process(chunk_str_slice)?;
         }
     }
