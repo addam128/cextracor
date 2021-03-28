@@ -6,6 +6,7 @@ mod utils;
 
 use std::env;
 use std::process;
+use std::collections::HashMap;
 
 use analyzers::traits::Analyzer;
 use analyzers::version_finder::VersionFinder;
@@ -20,7 +21,7 @@ macro_rules! report_error {
 
 fn process(
     path: &str,
-    analyzers: &mut Vec< Box<dyn Analyzer> >)
+    analyzers: &mut HashMap< String, Box<dyn Analyzer> >)
     -> Result<(), utils::Error> {
 
     let infile = reader::open_file(path)?;
@@ -30,11 +31,11 @@ fn process(
 
     /* Do for the previous run, if this was at the end of the previous run,
     it could be omitted due to an Error, and would cause inconsistencies*/
-    analyzers.iter_mut().for_each(|a| a.as_mut().clear());
+    analyzers.values_mut().for_each(|a| a.as_mut().clear());
 
     reader::read_and_process_chunks(infile, analyzers)?;
 
-    for analyzer in analyzers.iter_mut() {
+    for analyzer in analyzers.values_mut() {
             println!("{}", analyzer.finalize()?.pretty(4));
             
     }
@@ -44,8 +45,8 @@ fn process(
 
 fn main() {
 
-    let mut analyzers = Vec::< Box<dyn Analyzer> >::new();
-    analyzers.push(Box::new(VersionFinder::new().expect("Could not compile regex."))); 
+    let mut analyzers = HashMap::< String, Box<dyn Analyzer> >::new();
+    analyzers.insert(String::from("versions"), Box::new(VersionFinder::new().expect("Could not compile regex."))); 
 
     let retval = 
         env::args()
