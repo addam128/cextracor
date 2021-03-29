@@ -29,7 +29,7 @@ impl Into<JsonValue> for Revision {
     fn into(self) -> JsonValue {
 
         json::object! {
-            verison: self._version,
+            version: self._version,
             description: self._description,
             date: self._date
         }
