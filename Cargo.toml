@@ -8,4 +8,5 @@ edition = "2018"
 
 [dependencies]
 regex = "1"
+fancy-regex = "0.5"
 json = "0.12.4"
