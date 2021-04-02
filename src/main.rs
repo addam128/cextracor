@@ -11,7 +11,7 @@ use std::collections::HashMap;
 use analyzers::traits::Analyzer;
 use analyzers::version_finder::VersionFinder;
 use analyzers::title_finder::TitleFinder;
-use json::{JsonValue, object};
+use serialization::JsonSerializer;
 
 macro_rules! report_error {
     ($info: expr) => {
@@ -26,6 +26,7 @@ fn process(
     -> Result<(), utils::Error> {
 
     let infile = reader::open_file(path)?;
+    let mut serializer = JsonSerializer::new(path)?;
     if infile.metadata()?.is_dir() {
         return Err(utils::Error::IsADirectory);
     }
@@ -36,10 +37,7 @@ fn process(
 
     reader::read_and_process_chunks(infile, analyzers)?;
 
-    for analyzer in analyzers.values_mut() {
-            println!("{}", analyzer.finalize()?.pretty(4));
-            
-    }
+    serializer.serialize(analyzers)?;
 
     Ok(())
 }
@@ -68,6 +66,7 @@ fn main() {
                             utils::Error::IsADirectory => { report_error!("this is a directory"); }
                             utils::Error::RegexError(_) => {}
                             utils::Error::BadReadError => {report_error!("could not get more bytes from Read")}
+                            utils::Error::UserChoice => {report_error!("user chose not to overwrite existing file")}
                         }
                         1 
                     }
