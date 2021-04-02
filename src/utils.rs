@@ -6,7 +6,8 @@ pub(crate) enum Error {
     Utf8ConversionError(std::str::Utf8Error),
     IsADirectory,
     RegexError(regex::Error),
-    BadReadError
+    BadReadError,
+    UserChoice
 }
 
 impl From<std::io::Error> for Error {
