@@ -54,8 +54,7 @@ pub(crate) fn read_and_process_chunks<I>(
                 Ok(slice) => { 
                      break slice;
                     }
-                Err(err) => {
-                    println!("{}", err);
+                Err(_) => {
                     let mut byte = [0u8; 1];
                     let num = input.read(&mut byte)?;
                     if num == 0 {
