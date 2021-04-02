@@ -10,6 +10,7 @@ use std::collections::HashMap;
 
 use analyzers::traits::Analyzer;
 use analyzers::version_finder::VersionFinder;
+use analyzers::title_finder::TitleFinder;
 use json::{JsonValue, object};
 
 macro_rules! report_error {
@@ -47,6 +48,7 @@ fn main() {
 
     let mut analyzers = HashMap::< String, Box<dyn Analyzer> >::new();
     analyzers.insert(String::from("versions"), Box::new(VersionFinder::new().expect("Could not compile regex."))); 
+    analyzers.insert(String::from("title"), Box::new(TitleFinder::new().expect("Could not compile regex.")));
 
     let retval = 
         env::args()
