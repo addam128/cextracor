@@ -8,17 +8,17 @@ use crate::analyzers::traits::Analyzer;
 
 
 
-fn prompt(path: &Path) -> bool{
+fn prompt(path: &Path) -> Result<bool, utils::Error> {
     loop {
         print!("The output file {:?} exists, do you want to overwrite its contents? [y/n]:", path);
-        io::stdout().flush();
+        io::stdout().flush()?;
         let mut answer = [0u8; 1];
-        io::stdin().read_exact(&mut answer);
+        io::stdin().read_exact(&mut answer)?;
         match from_utf8(&answer) {
             Ok(val) => {
                 match  val {
-                    "y" => { return true;}
-                    "n" => { return false;}
+                    "y" => { return Ok(true);}
+                    "n" => { return Ok(false);}
                     _ => {println!("Invalid answer.")}
                 }
             }
@@ -56,7 +56,7 @@ impl JsonSerializer {
                                 }
                                 Err(_) => {
                                     
-                                    match prompt(_path.as_path()) {
+                                    match prompt(_path.as_path())? {
                                         true => {
                                             OpenOptions::new()
                                                         .write(true)
