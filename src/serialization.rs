@@ -87,7 +87,8 @@ impl JsonSerializer {
             json::stringify_pretty(
                 json::object!{
                     title: analyzers.get_mut("title").unwrap().finalize()?,
-                    versions: analyzers.get_mut("versions").unwrap().finalize()?
+                    versions: analyzers.get_mut("versions").unwrap().finalize()?,
+                    bibliography: analyzers.get_mut("bibliography").unwrap().finalize()?
                 },
                 4)
                 .as_bytes()
