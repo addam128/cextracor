@@ -10,6 +10,7 @@ use std::collections::HashMap;
 
 use analyzers::traits::Analyzer;
 use analyzers::version_finder::VersionFinder;
+use analyzers::bibliography_finder::BibliographyFinder;
 use analyzers::title_finder::TitleFinder;
 use serialization::JsonSerializer;
 
@@ -47,6 +48,7 @@ fn main() {
     let mut analyzers = HashMap::< String, Box<dyn Analyzer> >::new();
     analyzers.insert(String::from("versions"), Box::new(VersionFinder::new().expect("Could not compile regex."))); 
     analyzers.insert(String::from("title"), Box::new(TitleFinder::new().expect("Could not compile regex.")));
+    analyzers.insert(String::from("bibliography"), Box::new(BibliographyFinder::new().expect("Could not compile regex.")));
 
     let retval = 
         env::args()
@@ -65,6 +67,7 @@ fn main() {
                             utils::Error::Utf8ConversionError(err) => { report_error!(err); }
                             utils::Error::IsADirectory => { report_error!("this is a directory"); }
                             utils::Error::RegexError(_) => {}
+                            utils::Error::FancyRegexError(_) => {}
                             utils::Error::BadReadError => {report_error!("could not get more bytes from Read")}
                             utils::Error::UserChoice => {report_error!("user chose not to overwrite existing file")}
                         }

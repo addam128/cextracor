@@ -6,6 +6,7 @@ pub(crate) enum Error {
     Utf8ConversionError(std::str::Utf8Error),
     IsADirectory,
     RegexError(regex::Error),
+    FancyRegexError(fancy_regex::Error)
     BadReadError,
     UserChoice
 }
@@ -23,4 +24,8 @@ impl From<std::str::Utf8Error> for Error {
 impl From<regex::Error> for Error {
 
     fn from(err: regex::Error) -> Self {Error::RegexError(err)}
+}
+impl From<fancy_regex::Error> for Error {
+
+    fn from(err: fancy_regex::Error) -> Self {Error::FancyRegexError(err)}
 }
