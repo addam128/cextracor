@@ -54,7 +54,7 @@ impl Analyzer for BibliographyFinder {
         if self._bibliography_start_found {
             let bibliography_entries = self._bibliography_entry_regex.captures_iter(to_process);
             for bibliography_entry in bibliography_entries {
-                let unwrapped = bibliography_entry.unwrap();
+                let unwrapped = bibliography_entry?; // this needs to be handled 
 
 
                 let key = unwrapped.get(1).unwrap().as_str();
