@@ -7,6 +7,8 @@ pub(crate) enum Error {
     IsADirectory,
     RegexError(regex::Error),
     FancyRegexError(fancy_regex::Error)
+    BadReadError,
+    UserChoice
 }
 
 impl From<std::io::Error> for Error {
