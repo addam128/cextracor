@@ -67,6 +67,7 @@ fn main() {
                             utils::Error::Utf8ConversionError(err) => { report_error!(err); }
                             utils::Error::IsADirectory => { report_error!("this is a directory"); }
                             utils::Error::RegexError(_) => {}
+                            utils::Error::FancyRegexError(_) => {}
                         }
                         1 
                     }
