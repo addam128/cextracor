@@ -1,5 +1,5 @@
-use json::{JsonValue, object};
 use regex::Regex;
+use json::{ JsonValue, object };
 
 use crate::utils;
 
@@ -56,7 +56,7 @@ impl Analyzer for TitleFinder {
         Ok(())
     }
 
-    fn finalize(&mut self) -> Result<json::JsonValue, utils::Error> {
+    fn finalize(&mut self) -> Result<JsonValue, utils::Error> {
         let re = Regex::new(r"\s+").unwrap();
         let result_title = re.replace_all(&self._title, " ");
         Ok(object! {
