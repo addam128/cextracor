@@ -90,9 +90,8 @@ impl JsonSerializer {
                 json::object!{
                     title: analyzers.get_mut("title").unwrap().finalize()?,
                     versions: analyzers.get_mut("versions").unwrap().finalize()?,
-                    bibliography: analyzers.get_mut("bibliography").unwrap().finalize()?
-                    table_of_contents: array![],
                     bibliography: analyzers.get_mut("bibliography").unwrap().finalize()?,
+                    table_of_contents: array![]
                 },
                 4)
                 .as_bytes()
