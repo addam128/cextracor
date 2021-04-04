@@ -25,7 +25,7 @@ impl BibliographyFinder {
         Ok(
             Self {
                 _bibliography_entry_regex: Regex::new(r"(?s)\s*(\[[a-zA-Z0-9_\-\#\s]*\])(.*?(?=\n{2}|\[))")?,
-                _bibliography_start_regex: Regex::new(r"(?i).*(bibliography|referenced literature|references)\n")?,
+                _bibliography_start_regex: Regex::new(r"(?i).*(bibliography|referenced literature|references|literature)\n")?,
                 _bibliography_start_found: false,
                 _found: key_map,
                 _buffer: String::new(),
