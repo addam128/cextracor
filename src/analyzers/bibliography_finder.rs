@@ -78,8 +78,7 @@ impl Analyzer for BibliographyFinder {
 
     fn clear(&mut self) -> () {
         self._buffer.clear();
-        for set in self._found.values_mut() {
-            set.clear();
-        }
+        self._found.clear();
+        self._bibliography_start_found = false;
     }
 }
