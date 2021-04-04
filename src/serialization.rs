@@ -3,6 +3,8 @@ use std::path::{ PathBuf, Path };
 use std::io::{ self, Write, Read };
 use std::collections::HashMap;
 
+use json::array;
+
 use crate::utils;
 use crate::analyzers::traits::Analyzer;
 
@@ -87,7 +89,9 @@ impl JsonSerializer {
             json::stringify_pretty(
                 json::object!{
                     title: analyzers.get_mut("title").unwrap().finalize()?,
-                    versions: analyzers.get_mut("versions").unwrap().finalize()?
+                    versions: analyzers.get_mut("versions").unwrap().finalize()?,
+                    table_of_contents: array![],
+                    bibliography: analyzers.get_mut("bibliography").unwrap().finalize()?,
                 },
                 4)
                 .as_bytes()

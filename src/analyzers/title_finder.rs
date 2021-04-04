@@ -59,9 +59,8 @@ impl Analyzer for TitleFinder {
     fn finalize(&mut self) -> Result<JsonValue, utils::Error> {
         let re = Regex::new(r"\s+").unwrap();
         let result_title = re.replace_all(&self._title, " ");
-        Ok(object! {
-            title: result_title.trim()
-        }
+        Ok(
+            JsonValue::from(result_title.trim())
         )
     }
 
