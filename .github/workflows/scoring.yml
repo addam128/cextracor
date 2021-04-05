@@ -19,3 +19,4 @@ jobs:
         with:
           message: "Current score: ${{ needs.score.outputs.score }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ${{ needs.score.outputs.score }}
