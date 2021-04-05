@@ -1,0 +1,14 @@
+name: Scoring
+
+on: push
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run scoring
+        run:
+          shell: bash ./test_scores.sh
+          working-directory: scoring
