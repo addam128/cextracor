@@ -45,7 +45,7 @@ impl Analyzer for TitleFinder {
                         let caps = title_regex.captures(&text).unwrap();
                         let mut i = 1;
                         while caps.get(i) == None {
-                            i = i + 1;
+                            i += 1;
                         }
                         self._title = caps.get(i).map_or("", |m| m.as_str()).replace("\n", "");
                         return Ok(())
