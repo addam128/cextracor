@@ -7,11 +7,9 @@ jobs:
       score: ${{ steps.score_step.outputs.finalscore }}
     steps:
       - uses: actions/checkout@v2
-#      - name: score_step
-#        run: bash ./test_scores.sh
-#        working-directory: scoring
       - id: score_step
-        run: echo "::set-output name=finalscore::20"
+        run: bash ./test_scores.sh
+        working-directory: scoring
   comment:
     runs-on: ubuntu-latest
     needs: score_job
