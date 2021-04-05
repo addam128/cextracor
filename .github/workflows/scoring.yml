@@ -9,6 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run scoring
-        run:
-          shell: bash ./test_scores.sh
-          working-directory: scoring
+        run: bash ./test_scores.sh
+        working-directory: scoring
