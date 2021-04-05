@@ -7,7 +7,7 @@ total_score=0
 for file in $DATASET
 do
   cp $file ./tmp/$(basename $file)
-  cargo run ./tmp/$(basename $file) >/dev/null 2>&1
+  cargo run --release ./tmp/$(basename $file) >/dev/null 2>&1
 done
 
 for json_file in ./tmp/*.json
