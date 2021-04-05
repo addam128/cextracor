@@ -22,7 +22,7 @@ jobs:
       run: cargo test --verbose
       
   lint:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: Lint package
     steps:
       - uses: actions/checkout@v2
