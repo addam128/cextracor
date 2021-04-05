@@ -10,7 +10,7 @@ jobs:
 #      - name: score_step
 #        run: bash ./test_scores.sh
 #        working-directory: scoring
-      - name: score_step
+      - id: score_step
         run: echo "::set-output name=finalscore::20"
   comment:
     runs-on: ubuntu-latest
@@ -21,4 +21,4 @@ jobs:
         with:
           message: "Current score: ${{ needs.score.outputs.score }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo ${{ needs.score_job.outputs.score }}
+      - run: echo ${{needs.score_job.outputs.score}}
