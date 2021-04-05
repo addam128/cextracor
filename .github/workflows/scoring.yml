@@ -17,7 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: thollander/actions-comment-pull-request@master
+        env:
+          score: ${{needs.score_job.outputs.score}}
         with:
-          message: "Current score: ${{ needs.score.outputs.score }}"
+          message: "Current score: ${{ env.score }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo ${{needs.score_job.outputs.score}}
