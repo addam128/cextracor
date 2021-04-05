@@ -8,6 +8,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Run scoring
+      - name: score
         run: bash ./test_scores.sh
         working-directory: scoring
+    outputs:
+      score: ${{ steps.score.outputs.score }}
