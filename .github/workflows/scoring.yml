@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: score_step
-#        run: echo "::set-output name=finalscore:$(bash ./test_scores.sh)"
-        run: echo "::set-output name=finalscore::20"
+        run: echo "::set-output name=finalscore:$(bash ./test_scores.sh)"
+#        run: echo "::set-output name=finalscore::20"
         working-directory: scoring
   comment:
     runs-on: ubuntu-latest
