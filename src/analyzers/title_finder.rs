@@ -1,5 +1,5 @@
 use regex::Regex;
-use json::{ JsonValue, object };
+use json::JsonValue;
 
 use crate::utils;
 
@@ -64,5 +64,5 @@ impl Analyzer for TitleFinder {
         )
     }
 
-    fn clear(&mut self) -> () {}
+    fn clear(&mut self){}
 }

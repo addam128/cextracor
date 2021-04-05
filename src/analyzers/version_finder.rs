@@ -3,7 +3,6 @@ use regex::Regex;
 
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::iter::FromIterator;
 
 use crate::utils;
 
@@ -57,21 +56,21 @@ impl Analyzer for VersionFinder {
         let eal_iter = self._eal_regex.find_iter(chunk);
         for mat in eal_iter {
             self._found.get_mut("eal").unwrap()
-                .insert(String::from(chunk[mat.start()..mat.end()].trim().to_uppercase())
+                .insert(chunk[mat.start()..mat.end()].trim().to_uppercase()
                                 .replace("\n", " "));
         }
 
         let rsa_iter = self._rsa_regex.find_iter(chunk);
         for mat in rsa_iter {
             self._found.get_mut("rsa").unwrap()
-                .insert(String::from(chunk[mat.start()..mat.end()].trim().to_uppercase())
+                .insert(chunk[mat.start()..mat.end()].trim().to_uppercase()
                                 .replace("\n", " "));               
         }
 
         let sha_iter = self._sha_regex.find_iter(chunk);
         for mat in sha_iter {
             self._found.get_mut("sha").unwrap()
-                .insert(String::from(chunk[mat.start()..mat.end()].trim().to_uppercase())
+                .insert(chunk[mat.start()..mat.end()].trim().to_uppercase()
                                 .replace("\n", " "));               
         }
 
@@ -85,7 +84,7 @@ impl Analyzer for VersionFinder {
         let ecc_iter = self._ecc_regex.find_iter(chunk);
         for mat in ecc_iter {
             self._found.get_mut("ecc").unwrap()
-                .insert(String::from(chunk[mat.start()..mat.end()].trim().to_uppercase())
+                .insert(chunk[mat.start()..mat.end()].trim().to_uppercase()
                                 .replace("\n", " "));    
         }
     
@@ -109,18 +108,18 @@ impl Analyzer for VersionFinder {
     fn finalize(&mut self) -> Result<JsonValue, utils::Error> {
 
         Ok(object! {
-            eal: Vec::from_iter(self._found.get_mut("eal").unwrap().drain()),
-            rsa: Vec::from_iter(self._found.get_mut("rsa").unwrap().drain()),
-            des: Vec::from_iter(self._found.get_mut("des").unwrap().drain()),
-            sha: Vec::from_iter(self._found.get_mut("sha").unwrap().drain()),
-            ecc: Vec::from_iter(self._found.get_mut("ecc").unwrap().drain()),
-            java_card: Vec::from_iter(self._found.get_mut("java_card").unwrap().drain()),
-            global_platform: Vec::from_iter(self._found.get_mut("global_platform").unwrap().drain())
+            eal: self._found.get_mut("eal").unwrap().drain().collect::<Vec<_>>(),
+            rsa: self._found.get_mut("rsa").unwrap().drain().collect::<Vec<_>>(),
+            des: self._found.get_mut("des").unwrap().drain().collect::<Vec<_>>(),
+            sha: self._found.get_mut("sha").unwrap().drain().collect::<Vec<_>>(),
+            ecc: self._found.get_mut("ecc").unwrap().drain().collect::<Vec<_>>(),
+            java_card: self._found.get_mut("java_card").unwrap().drain().collect::<Vec<_>>(),
+            global_platform: self._found.get_mut("global_platform").unwrap().drain().collect::<Vec<_>>()
             }
         )
     }
 
-    fn clear(&mut self) -> () {
+    fn clear(&mut self) {
         for set in self._found.values_mut() {
             set.clear();
         }

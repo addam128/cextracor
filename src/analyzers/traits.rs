@@ -7,5 +7,5 @@ pub(crate) trait Analyzer {
     
     fn finalize(&mut self) -> Result<JsonValue, utils::Error>;
 
-    fn clear(&mut self) -> ();
+    fn clear(&mut self);
 }

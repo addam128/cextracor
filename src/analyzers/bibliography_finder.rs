@@ -76,7 +76,7 @@ impl Analyzer for BibliographyFinder {
         Ok(JsonValue::from(map))
     }
 
-    fn clear(&mut self) -> () {
+    fn clear(&mut self){
         self._buffer.clear();
         self._found.clear();
         self._bibliography_start_found = false;
