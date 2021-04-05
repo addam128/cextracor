@@ -1,7 +1,7 @@
 DATASET=./dataset/*.txt
 NUMBER_OF_FILES=50
 
-mkdir tmp
+mkdir ./tmp
 
 total_score=0
 for file in $DATASET
@@ -17,3 +17,5 @@ do
 done
 
 echo "::set-output name=score::$(echo "scale=2 ; $total_score / $NUMBER_OF_FILES" | bc)"
+
+rm -r ./tmp
