@@ -16,6 +16,7 @@ do
   total_score=$(( $total_score + $file_score))
 done
 
-echo "scale=2 ; $total_score / $NUMBER_OF_FILES" | bc
+score=$(echo "scale=2 ; $total_score / $NUMBER_OF_FILES" | bc)
+echo ::set-output name=finalscore::$score
 
 rm -r ./tmp
