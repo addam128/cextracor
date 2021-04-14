@@ -8,7 +8,7 @@ use std::env;
 use std::process;
 use std::collections::HashMap;
 
-use analyzers::traits::Analyzer;
+use analyzers::{revisions_finder::RevisionsFinder, traits::Analyzer};
 use analyzers::version_finder::VersionFinder;
 use analyzers::bibliography_finder::BibliographyFinder;
 use analyzers::title_finder::TitleFinder;
@@ -49,6 +49,7 @@ fn main() {
     analyzers.insert(String::from("versions"), Box::new(VersionFinder::new().expect("Could not compile regex."))); 
     analyzers.insert(String::from("title"), Box::new(TitleFinder::new().expect("Could not compile regex.")));
     analyzers.insert(String::from("bibliography"), Box::new(BibliographyFinder::new().expect("Could not compile regex.")));
+    analyzers.insert(String::from("revisions"), Box::new(RevisionsFinder::new().expect("Could not compile regex.")));
 
     let retval = 
         env::args()

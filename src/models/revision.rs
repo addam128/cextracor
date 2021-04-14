@@ -22,6 +22,10 @@ impl Revision {
                 _date: String::from(date)
             }
         }
+
+    pub(crate) fn from_line(line: &str) {
+
+    }
 }
 
 impl Into<JsonValue> for Revision {
