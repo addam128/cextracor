@@ -1,4 +1,5 @@
 use json::object;
+use json::array;
 use regex::{Regex, RegexSet};
 
 use crate::utils;
@@ -141,7 +142,7 @@ impl Analyzer for RevisionsFinder {
         for line in self._revision_lines.iter() {
             println!("{}", line);
         }
-        Ok(object!{})
+        Ok(array!{})
     }
 
     fn clear(&mut self) {
