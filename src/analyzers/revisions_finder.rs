@@ -14,10 +14,13 @@ pub(crate) struct RevisionsFinder {
     _done: bool,
     _revisions: Vec<Revision>,
     _revision_lines: Vec<String>,
-    _dummy_string: String,
-    _revision_regex: Vec<Regex>,
+    _revision_regex: RegexSet,
     _activator_regex: Regex,
-    _buffer: String
+    _date_regex: Regex,
+    _id_regex: Regex,
+    _buffer: String,
+    _whitespace_regex: Regex,
+    _date_deconstruct_regex: Regex
 
 }
 
@@ -31,21 +34,22 @@ impl RevisionsFinder {
                 _done: false,
                 _revisions: Vec::new(),
                 _revision_lines: Vec::new(),
-                _dummy_string: String::new(),
-                _revision_regex: vec![
-                    Regex::new(
-                    r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})\s+(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+\s+[^\n]+"
-                    )?,
-                    Regex::new(r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4}):?\s+[^\n]+"
-                    )?,
-                    Regex::new(
-                        r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+[^\n]+"
-                    )?
-                ], // regex set could help
+                _revision_regex: RegexSet::new( // all possible combinations for revision line(s)
+                    &[
+                    r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})\s+(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+\s+[^\n]+",
+                    r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4}):?\s+[^\n]+",
+                    r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+[^\n]+"
+                    ]
+                )?,
                 _activator_regex: Regex::new(
-                    /* mandatory newline at the end eliminates these titles if they are in contents table */
+                    /* mandatory newline at the end eliminates these titles if they are in contents table, but its not bulletproof, so rather check some data after each found */
                     r"(?i)(?:Revision\s+?History|(?-i)Version\s+?Control|(?i)Document\s+?Evolution|Rev\s+?Date\s+?(?:Authors\s+?)?Description):?\s*\n")?,
-                _buffer: String::new()
+                _buffer: String::new(),
+                _date_regex: Regex::new(r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})")?, // end not anchored, possible ":"
+                _id_regex: Regex::new(r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))")?,
+                _whitespace_regex: Regex::new(r"\s{2,}")?,
+                _date_deconstruct_regex: Regex::new(r"^((?P<year>\d{4})[\.-/](?P<month>\d{1,2}|\w{2,12})[\.-/](?P<day>\d{1,2})|(?P<day>\d{1,2})[\.-/](?P<month>\d{1,2}|\w{2,12})[\.-/](?P<year>\d{4}))$")?
+
             }
         )
     }
@@ -53,16 +57,15 @@ impl RevisionsFinder {
     fn process_buffered(&mut self) -> Result<(), utils::Error> {
 
         let mut empty = true;
+        let mut black_hole = String::new();
 
         for line in self._buffer.lines().into_iter().map(|l| l.trim()) {
-            if line == "" {
+            if line == "" { // this is working but kinda meh, maybe find something better to stop looking for revisions
                 if empty { continue }
                 else { break; }
             }
 
-            if self._revision_regex.iter()
-                                   .map(|reg| reg.is_match(line))
-                                   .fold(false, |acc, elem| acc || elem) {
+            if self._revision_regex.is_match(line) {
 
                 empty = false;
                 self._revision_lines.push(String::from(line));
@@ -71,10 +74,12 @@ impl RevisionsFinder {
             }
 
             self._revision_lines.last_mut() // if ther is a revision add cont. line, if not ad to dummy
-                    .unwrap_or(&mut self._dummy_string).push_str(&format!(" {}", line));
+                    .unwrap_or(&mut black_hole).push_str(&format!(" {}", line));
 
-            self._dummy_string.clear(); // remove dummy to keep it small
+            black_hole.clear(); // remove dummy to keep it small
         }
+
+        self._buffer.clear();
 
         Ok(())
     }
@@ -86,8 +91,8 @@ impl RevisionsFinder {
         -> Result<(), utils::Error>{
         
         if self._buffer.len() >= MAX_INTERNAL_BUFFER {
-            self._done = true;
-            return Ok(());
+            self._activated = false;
+            return self.process_buffered();
         }
 
         let remainder = MAX_INTERNAL_BUFFER - self._buffer.len();
@@ -113,15 +118,42 @@ impl RevisionsFinder {
             return Ok(());
         }
     }
+
+    fn construct_revisions(&mut self) -> Result<(), utils::Error> {
+
+        let mut date: &str = "";
+        let mut id: &str = "";
+        let mut desc: &str = ""; 
+
+        for rev_line in self._revision_lines.iter() {
+
+            let parts = self._whitespace_regex.split(rev_line.as_str());
+
+            for part in parts {
+
+                if self._date_regex.is_match(part) {
+                    date = part;
+                }
+                else if self._id_regex.is_match(part) {
+                    id = part;
+                }
+                else {
+                    desc = part; // because description seems to be always after author, the for cycle naturally will put that in desc at the end of the for loop
+                }
+            }
+
+
+
+            self._revisions.push(Revision::new(id, desc, date));
+        }
+
+        Ok(())
+    }
 }
 
 impl Analyzer for RevisionsFinder {
     
     fn process(&mut self, chunk: &str) -> Result<(), utils::Error> {
-        
-        if self._done {
-            return Ok(())
-        }
 
         match self._activated {
 
@@ -139,10 +171,10 @@ impl Analyzer for RevisionsFinder {
     fn finalize(&mut self) -> Result<json::JsonValue, utils::Error> {
         
         self.process_buffered()?;
-        for line in self._revision_lines.iter() {
-            println!("{}", line);
-        }
-        Ok(array!{})
+        self.construct_revisions()?;
+        Ok(
+            json::JsonValue::from(self._revisions.drain(0..).collect::<Vec<_>>())
+        )
     }
 
     fn clear(&mut self) {
@@ -150,7 +182,6 @@ impl Analyzer for RevisionsFinder {
         self._buffer.clear();
         self._revisions.clear();
         self._revision_lines.clear();
-        self._dummy_string.clear();
         self._done = false;
         self._activated = false;
     }
