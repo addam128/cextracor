@@ -1,10 +1,10 @@
-use json::object;
-use json::array;
 use regex::{Regex, RegexSet};
 
 use crate::utils;
 use crate::models::revision::Revision;
+use crate::models::date::DateFormatter;
 use super::traits::Analyzer;
+
 
 const MAX_INTERNAL_BUFFER: usize = 3072; // under this one document fails because the revisions is too long
 
@@ -20,7 +20,7 @@ pub(crate) struct RevisionsFinder {
     _id_regex: Regex,
     _buffer: String,
     _whitespace_regex: Regex,
-    _date_deconstruct_regex: Regex
+    _date_formatter: DateFormatter
 
 }
 
@@ -48,7 +48,7 @@ impl RevisionsFinder {
                 _date_regex: Regex::new(r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})")?, // end not anchored, possible ":"
                 _id_regex: Regex::new(r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))")?,
                 _whitespace_regex: Regex::new(r"\s{2,}")?,
-                _date_deconstruct_regex: Regex::new(r"^((?P<year>\d{4})[\.-/](?P<month>\d{1,2}|\w{2,12})[\.-/](?P<day>\d{1,2})|(?P<day>\d{1,2})[\.-/](?P<month>\d{1,2}|\w{2,12})[\.-/](?P<year>\d{4}))$")?
+                _date_formatter: DateFormatter::new()?
 
             }
         )
@@ -58,10 +58,15 @@ impl RevisionsFinder {
 
         let mut empty = true;
         let mut black_hole = String::new();
+        let mut empty_counter = 0;
 
         for line in self._buffer.lines().into_iter().map(|l| l.trim()) {
             if line == "" { // this is working but kinda meh, maybe find something better to stop looking for revisions
                 if empty { continue }
+                if empty_counter < 2 {
+                    empty_counter += 1;
+                    continue;
+                }
                 else { break; }
             }
 
@@ -73,7 +78,7 @@ impl RevisionsFinder {
 
             }
 
-            self._revision_lines.last_mut() // if ther is a revision add cont. line, if not ad to dummy
+            self._revision_lines.last_mut() // if ther is a revision add cont. line, if not add to dummy
                     .unwrap_or(&mut black_hole).push_str(&format!(" {}", line));
 
             black_hole.clear(); // remove dummy to keep it small
@@ -125,7 +130,7 @@ impl RevisionsFinder {
         let mut id: &str = "";
         let mut desc: &str = ""; 
 
-        for rev_line in self._revision_lines.iter() {
+        for rev_line in self._revision_lines.iter().take(4) {
 
             let parts = self._whitespace_regex.split(rev_line.as_str());
 
@@ -139,12 +144,27 @@ impl RevisionsFinder {
                 }
                 else {
                     desc = part; // because description seems to be always after author, the for cycle naturally will put that in desc at the end of the for loop
+                                // however if trash is also collected(shouldnt be the case unless attack), this will yield something else than the description
+                                // but we dont care too much about results on malicious file
+                }
+
+                if date == ""  && desc != "" {
+                    
+                    if let Some(mat) = self._date_regex.find(desc) {
+
+                        date = &desc[mat.start()..mat.end()];
+                    }
                 }
             }
 
 
-
-            self._revisions.push(Revision::new(id, desc, date));
+            self._revisions.push(
+                Revision::new(
+                    id,
+                    desc,
+                    &self._date_formatter.standardize(date)
+                )
+            );
         }
 
         Ok(())
@@ -171,7 +191,9 @@ impl Analyzer for RevisionsFinder {
     fn finalize(&mut self) -> Result<json::JsonValue, utils::Error> {
         
         self.process_buffered()?;
+        
         self.construct_revisions()?;
+
         Ok(
             json::JsonValue::from(self._revisions.drain(0..).collect::<Vec<_>>())
         )
