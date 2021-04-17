@@ -35,13 +35,13 @@ impl VersionFinder {
         key_map.insert(String::from("global_platform"), HashSet::new());
         Ok(
             Self {
-                _rsa_regex: Regex::new(r"R(?i)sa(?-i)(-?\s?\d{3,4}(/\d{3,4})?){1}")?,
+                _rsa_regex: Regex::new(r"R(?i)sa(?-i)(?:-?\s?\d{3,4}(?:/\d{3,4})?){1}")?,
                 _eal_regex: Regex::new(r"E(?i)al\s?-?\d{1}\s?\+?")?,
-                _ecc_regex: Regex::new(r"(?i)ecc(\s?-?\d{0,8})")?,
-                _des_regex: Regex::new(r"(?i)(Triple|Double|3-key\s?T?|3|(?-i)T(?i)|2-key\s?T?|Single|SW){1}-?\s?Des")?,
-                _sha_regex: Regex::new(r"S(?i)ha\d?\s?(-?\s?\d?/?\d{1,4})")?,
-                _java_card_regex: Regex::new(r"(?i)java\s?card\s?-?(\d\.?){1,8}")?,
-                _global_platform_regex: Regex::new(r"(?i)global\s?-?platform\s?-?(\d\.?){1,8}")?,
+                _ecc_regex: Regex::new(r"(?i)ecc(?:\s?-?\d{0,8})")?,
+                _des_regex: Regex::new(r"(?i)(?:Triple|Double|3-key\s?T?|3|(?-i)T(?i)|2-key\s?T?|Single|SW){1}-?\s?Des")?,
+                _sha_regex: Regex::new(r"S(?i)ha\d?\s?(?:-?\s?\d?/?\d{1,4})")?,
+                _java_card_regex: Regex::new(r"(?i)java\s?card\s?-?(?:\d\.?){1,8}")?,
+                _global_platform_regex: Regex::new(r"(?i)global\s?-?platform\s?-?(?:\d\.?){1,8}")?,
                 _found: key_map,
             }
     )

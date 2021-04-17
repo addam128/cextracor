@@ -12,7 +12,7 @@ done
 
 for json_file in ./tmp/*.json
 do
-  file_score=$(python3 output_compare.py ./dataset/$(basename $json_file) ./tmp/$(basename $json_file))
+  file_score=$(python3 output_compare.py ./dataset/$(basename $json_file) ./tmp/$(basename $json_file) )
   total_score=$(( $total_score + $file_score))
 done
 
