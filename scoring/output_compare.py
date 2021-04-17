@@ -164,13 +164,29 @@ def check_bibliography(actual, expected):
 def main():
     expected = load_file(sys.argv[1])
     actual = load_file(sys.argv[2])
+    verbose = False
+    if len(sys.argv) == 4:
+        verbose = True if sys.argv[3] == "--verbose" else False
 
     checks = (check_title, check_versions, check_toc, check_revisions, check_bibliography)
+    check_results = []
     points = 0
     for check in checks:
-        points += check(actual, expected)
+        res = check(actual, expected)
+        points += res
+        check_results.append(res)
 
     print(math.ceil(points))
+
+    if verbose:
+        print("\n------------------------------------")
+        print(f"Detailed results for {sys.argv[2]}:")
+        print(f"Title - {check_results[0]}")
+        print(f"Versions - {check_results[1]}")
+        print(f"Table of contents - {check_results[2]}")
+        print(f"Revisions - {check_results[3]}")
+        print(f"Bibliography - {check_results[4]}")
+        print("------------------------------------")
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
