@@ -10,16 +10,16 @@ pub(crate) struct Revision {
 impl Revision {
    
     pub(crate) fn new(
-        version: &str,
-        description: &str,
-        date: &str)
+        version: String,
+        description: String,
+        date: String)
         -> Self {
 
             // TODO: if needed transform date into the right format
             Self {
-                _version: String::from(version),
-                _description: String::from(description),
-                _date: String::from(date)
+                _version: version,
+                _description: description,
+                _date: date
             }
         }
 }

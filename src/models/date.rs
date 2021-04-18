@@ -16,9 +16,9 @@ impl DateFormatter {
         Ok(
             Self { 
                 _date_decomposition_regex_one: Regex::new(
-                    r"^((?P<year>\d{4})[-/\.]((?P<month_n>\d{1,2})|(?P<month_w>\w{2,12}))[-/\.](?P<day>\d{1,2}))")?,
+                    r"^((?P<year>\d{4})[-/\.\s]((?P<month_n>\d{1,2})|(?P<month_w>\w{2,12}))[-/\.\s](?P<day>\d{1,2}))")?,
                 _date_decomposition_regex_two: Regex::new(
-                    r"(^(?P<day>\d{1,2})[-/\.]((?P<month_n>\d{1,2})|(?P<month_w>\w{2,12}))[-/\.](?P<year>\d{4}))$")?
+                    r"(^(?P<day>\d{1,2})[-/\.\s]((?P<month_n>\d{1,2})|(?P<month_w>\w{2,12}))[-/\.\s](?P<year>\d{4}))$")?
             }
         )
     }
@@ -70,15 +70,15 @@ impl DateFormatter {
 
         match from {
 
-            "January"   => {to.push('1');}
-            "February"  => {to.push('2');}
-            "March"     => {to.push('3');}
-            "April"     => {to.push('4');}
-            "May"       => {to.push('5');}
-            "June"      => {to.push('6');}
-            "July"      => {to.push('7');}
-            "August"    => {to.push('8');}
-            "September" => {to.push('9');}
+            "January"   => {to.push_str("01");}
+            "February"  => {to.push_str("02");}
+            "March"     => {to.push_str("03");}
+            "April"     => {to.push_str("04");}
+            "May"       => {to.push_str("05");}
+            "June"      => {to.push_str("06");}
+            "July"      => {to.push_str("07");}
+            "August"    => {to.push_str("08");}
+            "September" => {to.push_str("09");}
             "October"   => {to.push_str("10");}
             "November"  => {to.push_str("11");}
             "December"  => {to.push_str("12");}
