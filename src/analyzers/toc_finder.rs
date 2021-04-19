@@ -1,5 +1,5 @@
 // ^\s+([a-zA-Z0-9\.]*)\s*([\w \“\(\-\)\:\”\.]*?(?=\.{2}))\.*([0-9]*)
-use json::{JsonValue};
+use json::{JsonValue, array};
 use fancy_regex::Regex;
 
 use std::collections::HashMap;
@@ -15,7 +15,7 @@ pub(crate) struct ToCFinder {
     _toc_end_regex: Regex,
     _toc_start_found: bool,
     _toc_end_found: bool,
-    _found: Vec<(String, String, u32)>,
+    _found: Vec<json::JsonValue>,
     _buffer: String // maybe unused
 
 }
@@ -88,7 +88,7 @@ impl Analyzer for ToCFinder {
 
 
                 let page_num = page.parse::<u32>().unwrap();
-                self._found.push((String::from(index), String::from(name), page_num))
+                self._found.push(array![index, name, page_num]);
 
             }
         }
@@ -100,7 +100,9 @@ impl Analyzer for ToCFinder {
         let map  = self._found.clone();
         // Ok(JsonValue::from(map))
         // Ok(json::JsonValue::from(map))
-        Ok(JsonValue::from(self._found.drain(0..).collect::<Vec<_>>()))
+        Ok(
+            json::JsonValue::from(self._found.drain(0..).collect::<Vec<_>>())
+        )
     }
 
     fn clear(&mut self){
