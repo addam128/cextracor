@@ -91,7 +91,7 @@ impl JsonSerializer {
                     title: analyzers.get_mut("title").unwrap().finalize()?,
                     versions: analyzers.get_mut("versions").unwrap().finalize()?,
                     bibliography: analyzers.get_mut("bibliography").unwrap().finalize()?,
-                    table_of_contents: array![],
+                    table_of_contents: analyzers.get_mut("table_of_contents").unwrap().finalize()?,
                     revisions: analyzers.get_mut("revisions").unwrap().finalize()?
                 },
                 4)
