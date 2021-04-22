@@ -14,6 +14,7 @@ pub(crate) struct ToCFinder {
     _toc_end_regex: Regex,
     _toc_start_found: bool,
     _toc_end_found: bool,
+    _alternative: bool,
     _found: Vec<json::JsonValue>,
     _buffer: String // maybe unused
 
@@ -26,11 +27,12 @@ impl ToCFinder {
         let vec = Vec::new();
         Ok(
             Self {
-                _toc_entry_regex: Regex::new(r"\s*([a-zA-Z0-9.]*[a-zA-Z0-9])\s*\.{0,1}([\w “(\-):”.\/’\[\]–]*?(?=\.{2}))\.*([0-9]*)")?,
-                _toc_start_regex: Regex::new(r"(?i)\n(table of contents|contents|.*table of contents)\n")?,
-                _toc_end_regex: Regex::new(r"\n\n")?,
+                _toc_entry_regex: Regex::new(r"\s*([a-zA-Z0-9.]*[a-zA-Z0-9])\s*\.{0,1}([\w “(\-):”.\/’\[\]–]*?(?=\.{2}))\.*\s?([0-9]*)")?,
+                _toc_start_regex: Regex::new(r"(?i)\n\s*(table of contents|contents|content)\n")?,
+                _toc_end_regex: Regex::new(r"\n{3}|.*(TÜV, TUEV).*")?,
                 _toc_start_found: false,
                 _toc_end_found: false,
+                _alternative: false,
                 _found: vec,
                 _buffer: String::new(),
             }
@@ -41,6 +43,9 @@ impl ToCFinder {
 impl Analyzer for ToCFinder {
 
     fn process(&mut self, chunk: &str) -> Result<(), utils::Error> {
+        let _toc_start_regex_alternative = Regex::new(r"(?i)\n\s*(table of contents|contents|content):?\n")?;
+        let _toc_entry_regex_alternative = Regex::new(r"\s*([a-zA-Z0-9.]*[a-zA-Z0-9])\s*\.{0,1}([\w“ (\-):”.\/’\[\]–]*?(?=\ {3,}))\ *([0-9]*)")?;
+
         let mut to_process = chunk;
         if self._toc_end_found {
             to_process = "";
@@ -54,6 +59,21 @@ impl Analyzer for ToCFinder {
                     // only process from matched bibliography in the current chunk
                     let m = match_option.unwrap();
                     to_process= &chunk[m.end()..];
+                }
+
+                else {
+                    let toc_start = _toc_start_regex_alternative.find(chunk);
+                    if toc_start.is_ok() {
+                        let match_option = toc_start.unwrap();
+                        if match_option.is_some() {
+                            println!("test");
+                            self._toc_start_found = true;
+                            self._alternative = true;
+                            // only process from matched bibliography in the current chunk
+                            let m = match_option.unwrap();
+                            to_process= &chunk[m.end()..];
+                        }
+                    }
                 }
             }
         }
@@ -71,7 +91,12 @@ impl Analyzer for ToCFinder {
         }
 
         if self._toc_start_found  {
-            let toc_entries = self._toc_entry_regex.captures_iter(to_process);
+            let toc_entries;
+            if !self._alternative {
+                toc_entries = self._toc_entry_regex.captures_iter(to_process);
+            } else {
+                toc_entries = _toc_entry_regex_alternative.captures_iter(to_process);
+            }
             for toc_entry in toc_entries {
                 let unwrapped = toc_entry?; // this needs to be handled
 
@@ -98,5 +123,6 @@ impl Analyzer for ToCFinder {
         self._buffer.clear();
         self._found.clear();
         self._toc_start_found = false;
+        self._alternative = false;
     }
 }
