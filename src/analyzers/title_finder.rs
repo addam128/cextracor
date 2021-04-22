@@ -64,5 +64,7 @@ impl Analyzer for TitleFinder {
         )
     }
 
-    fn clear(&mut self){}
+    fn clear(&mut self){
+        self._title.clear();
+    }
 }
