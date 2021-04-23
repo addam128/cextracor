@@ -16,11 +16,13 @@ pub(crate) struct RevisionsFinder {
     _revision_lines: Vec<String>,
     _revision_regex: RegexSet,
     _activator_regex: Regex,
-    _date_regex: Regex,
+    _date_match_regex: Regex,
+    _date_find_regex: Regex,
     _id_regex: Regex,
     _buffer: String,
     _whitespace_regex: Regex,
-    _date_formatter: DateFormatter
+    _date_formatter: DateFormatter,
+    _id_num_regex: Regex
 
 }
 
@@ -36,19 +38,21 @@ impl RevisionsFinder {
                 _revision_lines: Vec::new(),
                 _revision_regex: RegexSet::new( // all possible combinations for revision line(s)
                     &[
-                    r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})\s+(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+\s+[^\n]+",
-                    r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4}):?\s+[^\n]+",
-                    r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+[^\n]+"
+                    r"^(?:\d{2,4}[-/\.\s](\d{2}|\w{2,10})[-/\.\s]\d{2,4})\s+(?:Version\s?|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+\s+[^\n]+",
+                    r"^(?:(?:Version\s?|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|(?i)Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+(?:\d{2,4}[-/\s\.](\d{2}|\w{2,10})[-/\s\.]\d{2,4}):?\s+[^\n]+",
+                    r"^(?:(?:Version\s?|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|(?i)Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))\s+[^\n]+"
                     ]
                 )?,
                 _activator_regex: Regex::new(
                     /* mandatory newline at the end eliminates these titles if they are in contents table, but its not bulletproof, so rather check some data after each found */
                     r"(?i)(?:Revision\s+?History|(?-i)Version\s+?Control|(?i)Document\s+?Evolution|Rev\s+?Date\s+?(?:Authors\s+?)?Description):?\s*\n")?,
                 _buffer: String::new(),
-                _date_regex: Regex::new(r"^(?:\d{2,4}[-/\.](\d{2}|\w{2,10})[-/.]\d{2,4})")?, // end not anchored, possible ":"
-                _id_regex: Regex::new(r"^(?:(?:Version|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))")?,
+                _date_match_regex: Regex::new(r"^(?:\d{2,4}[-/\.\s](\d{2}|\w{2,10})[-/\.\s]\d{2,4}):?$")?,
+                _date_find_regex: Regex::new(r"\(?(?:\d{2,4}[-/\.\s](\d{2}|\w{2,10})[-/\.\s]\d{2,4})\)?:?")?,
+                _id_regex: Regex::new(r"^(?:(?:Version\s?|v)?(?:\d{1,2}\.)(?:\d{1,2}\.?)?+|(?i)Rev\.?\s*([A-Z]|(?:\d{1,2}\.?)+))$")?,
                 _whitespace_regex: Regex::new(r"\s{2,}")?,
-                _date_formatter: DateFormatter::new()?
+                _date_formatter: DateFormatter::new()?,
+                _id_num_regex: Regex::new(r"(\d{1,2}\.(\d\.?)*)")?
 
             }
         )
@@ -97,6 +101,7 @@ impl RevisionsFinder {
         
         if self._buffer.len() >= MAX_INTERNAL_BUFFER {
             self._activated = false;
+            //println!("{}", self._buffer);
             return self.process_buffered();
         }
 
@@ -126,43 +131,56 @@ impl RevisionsFinder {
 
     fn construct_revisions(&mut self) -> Result<(), utils::Error> {
 
-        let mut date: &str = "";
-        let mut id: &str = "";
-        let mut desc: &str = ""; 
+        for rev_line in self._revision_lines.iter() {
 
-        for rev_line in self._revision_lines.iter().take(4) {
+            let mut date = String::new();
+            let mut id = String::new();
+            let mut desc = String::new(); 
 
-            let parts = self._whitespace_regex.split(rev_line.as_str());
+            let parts = self._whitespace_regex.split(rev_line.as_str()).take(4);
 
             for part in parts {
 
-                if self._date_regex.is_match(part) {
-                    date = part;
+                if self._date_match_regex.is_match(part) {
+                    date.push_str(part);
                 }
                 else if self._id_regex.is_match(part) {
-                    id = part;
-                }
-                else {
-                    desc = part; // because description seems to be always after author, the for cycle naturally will put that in desc at the end of the for loop
-                                // however if trash is also collected(shouldnt be the case unless attack), this will yield something else than the description
-                                // but we dont care too much about results on malicious file
-                }
+                    id.push_str(part);
 
-                if date == ""  && desc != "" {
-                    
-                    if let Some(mat) = self._date_regex.find(desc) {
-
-                        date = &desc[mat.start()..mat.end()];
+                    if let Some(mat) = self._id_num_regex.find(part) {
+                        id.clear();
+                        id.push_str(&part[mat.start()..mat.end()]);
                     }
                 }
+                else {
+                    desc.clear();
+                    desc.push_str(part); // because description seems to be always after author, the for cycle naturally will put that in desc at the end of the for loop
+                                // however if trash is also collected(shouldnt be the case unless attack), this will yield something else than the description
+                                // but we dont care too much about results on malicious file
+                   // println!("{} : {}", desc, part);
+                }
+
             }
 
+            if date == ""  && desc != "" {
+                    
+                if let Some(mat) = self._date_find_regex.find(desc.as_str()) {
+
+                    date.push_str(&desc[mat.start()..mat.end()]);
+                    desc = format!("{}{}", &desc[..mat.start()], &desc[mat.end()..].trim());
+                }
+
+        }
+
+        if id == "" { // if no version then simply dont output
+            continue;
+        }
 
             self._revisions.push(
                 Revision::new(
                     id,
                     desc,
-                    &self._date_formatter.standardize(date)
+                    self._date_formatter.standardize(date.as_str())
                 )
             );
         }

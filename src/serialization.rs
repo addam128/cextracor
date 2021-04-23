@@ -63,6 +63,7 @@ impl JsonSerializer {
                                             OpenOptions::new()
                                                         .write(true)
                                                         .create(true)
+                                                        .truncate(true)
                                                         .open(_path.as_path())?
                                         }
                                         false => {
