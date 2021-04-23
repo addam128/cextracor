@@ -13,6 +13,7 @@ use analyzers::version_finder::VersionFinder;
 use analyzers::bibliography_finder::BibliographyFinder;
 use analyzers::title_finder::TitleFinder;
 use serialization::JsonSerializer;
+use crate::analyzers::toc_finder::ToCFinder;
 
 macro_rules! report_error {
     ($info: expr) => {
@@ -50,6 +51,7 @@ fn main() {
     analyzers.insert(String::from("title"), Box::new(TitleFinder::new().expect("Could not compile regex.")));
     analyzers.insert(String::from("bibliography"), Box::new(BibliographyFinder::new().expect("Could not compile regex.")));
     analyzers.insert(String::from("revisions"), Box::new(RevisionsFinder::new().expect("Could not compile regex.")));
+    analyzers.insert(String::from("table_of_contents"), Box::new(ToCFinder::new().expect("Could not compile regex.")));
 
     let retval = 
         env::args()
