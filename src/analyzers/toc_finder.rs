@@ -101,7 +101,7 @@ impl Analyzer for ToCFinder {
                 if let Ok(cap) = toc_entry {
                     let index = cap.get(1).map_or("", |mat| mat.as_str()).trim();
                     let name = cap.get(2).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");
-                    let page = cap.get(3).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");;
+                    let page = cap.get(3).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");
                     let page_num = page.parse::<u32>().unwrap_or(0);
                     self._found.push(array![index, name, page_num]);
                 }
