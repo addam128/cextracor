@@ -111,7 +111,7 @@ impl RevisionsFinder {
 
         let mut end_pos = start_pos + remainder;
 
-        if chunk[start_pos..].len() < remainder {
+        if chunk[start_pos..].len() <= remainder {
             end_pos = chunk.len();
         }
 
