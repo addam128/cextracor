@@ -1,3 +1,5 @@
+use std::str::from_utf8;
+
 use regex::{Regex, RegexSet};
 
 use crate::utils;
@@ -101,16 +103,37 @@ impl RevisionsFinder {
         
         if self._buffer.len() >= MAX_INTERNAL_BUFFER {
             self._activated = false;
-            //println!("{}", self._buffer);
+
             return self.process_buffered();
         }
 
-        let remainder = MAX_INTERNAL_BUFFER - self._buffer.len();
+        let remainder = MAX_INTERNAL_BUFFER - self._buffer.len(); // type overflow checked above
 
         let mut end_pos = start_pos + remainder;
-        if chunk[start_pos..].len() < remainder {
+
+        if chunk[start_pos..].len() <= remainder {
             end_pos = chunk.len();
         }
+
+        let mut counter = 0;
+
+        loop {
+            if counter > 3 {
+                return Err(utils::Error::BadReadError);
+            }
+
+            match from_utf8(&chunk.as_bytes()[start_pos..end_pos]) {
+                Ok(_) => {
+                    break;
+                }
+                Err(_) => {
+                    end_pos += 1;
+                }
+            }
+            counter += 1;
+        }
+        // the above loop block is not needed if u use:
+        //chunk[start_pos..].chars().take(end_pos-start_pos).for_each(|ch| self._buffer.push(ch)); this works as well but thewn the buffer limit is char and not byte based
 
         self._buffer.push_str(&chunk[start_pos..end_pos]);
         
