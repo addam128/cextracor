@@ -103,11 +103,11 @@ impl RevisionsFinder {
         
         if self._buffer.len() >= MAX_INTERNAL_BUFFER {
             self._activated = false;
-            //println!("{}", self._buffer);
+
             return self.process_buffered();
         }
 
-        let remainder = MAX_INTERNAL_BUFFER - self._buffer.len();
+        let remainder = MAX_INTERNAL_BUFFER - self._buffer.len(); // type overflow checked above
 
         let mut end_pos = start_pos + remainder;
 
