@@ -56,10 +56,7 @@ pub(crate) fn read_and_process_chunks<I>(
                     }
                 Err(_) => {
                     let mut byte = [0u8; 1];
-                    let num = input.read(&mut byte)?;
-                    if num == 0 {
-                        continue;
-                    }
+                    input.read_exact(&mut byte)?;
                     buffer.push(byte[0]);
                     bytes_read += 1;
                 }
