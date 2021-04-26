@@ -3,8 +3,6 @@ use std::path::{ PathBuf, Path };
 use std::io::{ self, Write, Read };
 use std::collections::HashMap;
 
-use json::array;
-
 use crate::utils;
 use crate::analyzers::traits::Analyzer;
 

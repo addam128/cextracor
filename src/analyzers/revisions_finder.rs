@@ -67,7 +67,7 @@ impl RevisionsFinder {
         let mut empty_counter = 0;
 
         for line in self._buffer.lines().into_iter().map(|l| l.trim()) {
-            if line == "" { // this is working but kinda meh, maybe find something better to stop looking for revisions
+            if line.is_empty() { // this is working but kinda meh, maybe find something better to stop looking for revisions
                 if empty { continue }
                 if empty_counter < 2 {
                     empty_counter += 1;
@@ -146,9 +146,9 @@ impl RevisionsFinder {
         if let Some(mat) = self._activator_regex.find(chunk) {
             self._activated = true;
             self.find_lines(chunk, mat.end())
-
-        } else {
-            return Ok(());
+        } 
+        else {
+            Ok(())
         }
     }
 

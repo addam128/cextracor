@@ -1,0 +1,174 @@
+{
+    "title": "NXP JCOP4.x on P73N2M0B0.2C2/2C6 Secure Element",
+    "versions": {
+        "eal": [
+            "EAL4",
+            "EAL5"
+        ],
+        "rsa": [
+            "RSA 1024",
+            "RSA_1024"
+        ],
+        "des": [
+            "3DES",
+            "TripleDES",
+            "Triple-DES",
+            "TDES",
+            "DES3"
+        ],
+        "sha": [
+            "SHA-1",
+            "SHA-256",
+            "SHA-512",
+            "SHA3",
+            "SHA-384",
+            "SHA-224"
+        ],
+        "ecc": [
+            "ECC 256"
+        ],
+        "java_card": [
+            "Java Card 3.0.4",
+            "Java Card 3"
+        ],
+        "global_platform": [
+            "GlobalPlatform 2.2.1"
+        ]
+    },
+    "bibliography": {
+        "[31]": "(pdf) Document JCOP 4.2 User Guidance Anomaly",
+        "[46]": "]. FCS_COP.1.1",
+        "[25]": "yes Amendment E, Security Upgrade for Card Content Management Version 1.0.1",
+        "[DESMAC]": "The TSF shall perform",
+        "[21]": ". Thus, it fulfills FDP_SDI.2, FIA_AFL.1",
+        "[GCM]": "The TSF shall perform",
+        "[ECDH_P1363]": "The TSF shall perform",
+        "[CFG]": ", FDP_IFF.1",
+        "[RSACipher]": "The TSF shall perform",
+        "[JCVM]": "Subset information flow control (JCVM)",
+        "[12]": "",
+        "[INSTALLER]": "has been refined and is now part of the card management SFRs (FDP_ITC.2",
+        "[RSASignaturePKCS1]": "The TSF shall perform",
+        "[45]": ", NIST Special Publication 800-38D Recommendation for BlockCipher",
+        "[OSU]": ", FDP_ IFF.1",
+        "[15]": ".",
+        "[39]": "or",
+        "[ODEL]": "Subset residual information protection (ODEL)",
+        "[SCP]": ", FIA_AFL.1",
+        "[3]": ", called JCAPI. – Software for implementing content management according to GlobalPlatform",
+        "[16]": "",
+        "[22]": "no",
+        "[7]": "(cf. Java Card System Protection Profile Collection",
+        "[9]": "",
+        "[24]": "yes Amendment D, Secure Channel Protocol 03 Version 1.1.1",
+        "[TDES_CMAC]": "The TSF shall perform",
+        "[Installer]": ":",
+        "[ABORT]": "Subset residual information protection (ABORT)",
+        "[SHA]": "The TSF shall perform",
+        "[PIN]": "and FCS_RNG.1 realize additional security functionality which is allowed by the PP",
+        "[GP]": ": – card locking (Section 9.6.3 of",
+        "[APDU]": "Subset residual information protection (APDU)",
+        "[18]": "yes Amendment C, Contactless Services Version 1.1",
+        "[JCVM-EditoriallyRefined]": "The TSF shall not allow",
+        "[13]": ".",
+        "[AES]": "The TSF shall perform",
+        "[HMAC]": "The TSF shall perform",
+        "[TripleDES]": "The TSF shall perform",
+        "[23]": "no Secure Element Configuration Version 1.0",
+        "[34]": "(pdf) Document JCOP 4.5 User Guidance Manual Anomaly",
+        "[48]": "NXP Trust Provisioning for Secure ICs - Trust Provisioning System Architecture, Version 1.08, 07.03.2017, NXP Semiconductor",
+        "[AMD]": "",
+        "[SC]": "FDP_IFC.2/CM FDP_IFC.2",
+        "[bArray]": "Subset residual information protection (bArray)",
+        "[DAP]": "The TSF shall perform",
+        "[JCRE]": "Management of security attributes (JCRE)",
+        "[JCRMI]": ", SFRs FDP_IFC.1/JCRMI, FDP_ IFF.1/JCRMI, FMT_MSA.1/EXPORT, FMT_MSA.1/REM_REFS, FMT_MSA.3/JCRMI, FMT_SMF.1/JCRMI, FMT_ REV.1/JCRMI, and FMT_SMR.1/JCRMI) are not included in the ST. In the PP",
+        "[11]": "",
+        "[OBJECTS]": "Subset residual information protection (OBJECTS)",
+        "[27]": ".",
+        "[CCM]": "which enforces the Firewall access control policy and the Secure Channel Protocol information flow policy and which is more restrictive than the PACKAGE LOADING information flow control SFP from PP",
+        "[ ]": "where assignments are additionally marked with the keyword \"assignment\".",
+        "[10]": "",
+        "[FIREWALL]": "Complete access control (FIREWALL)",
+        "[SD]": "FTP_ITC.1/CM FTP_ITC.1",
+        "[2]": ", see Figure 1.2.",
+        "[30]": "(pdf) Tab. 1.10: JCOP 4.2 UGM Delivery Items",
+        "[ADEL-EditoriallyRefined]": "The TSF shall explicitly deny access of",
+        "[TRANSIENT]": "Subset residual information protection (TRANSIENT)",
+        "[5]": "and a Java Card Runtime Environment",
+        "[32]": "(pdf) Document Common Criteria Requirements for PN8xy Products",
+        "[14]": ". • Wired Mode by using the APDUCard Gate according to ETSI 102 622",
+        "[AESMAC]": "The TSF shall perform",
+        "[ECSignature]": "The TSF shall perform",
+        "[42]": ").",
+        "[40]": "(pdf) Document JCOP 4.8 User Guidance Manual Anomaly",
+        "[44]": "",
+        "[37]": "(pdf) Document JCOP 4.6 User Guidance Manual Anomaly",
+        "[KEYS]": "Subset residual information protection (KEYS)",
+        "[FIREWALL Editorially Refined]": "",
+        "[RM]": ", FDP_ACF.1",
+        "[28]": ") 2. jumping inside a method fragment or interpreting the contents of a data memory area as if it was executable code 3. unauthorized execution of a remote method from the CAD (if the TOE pro- vides JCRMI functionality).",
+        "[36]": ",",
+        "[FIREWALL-JCVM]": "Secure security attributes (FIREWALL-JCVM)",
+        "[33]": ",",
+        "[FIREWALLEditoriallyRefined]": "The TSF shall not allow",
+        "[49]": "NXP Semiconductors - S&C Packing and Delivery Reuirements for Security Products - 07 july 2019 Release ©NXP B.V. 2020. All r0-201-43294-3.ights",
+        "[AES_CMAC]": "The TSF shall perform",
+        "[ADEL]": "Complete access control (ADEL)",
+        "[1 and 127]": "] unsuccessful authentication attempts occur related to",
+        "[38]": "(pdf) Document Common Criteria Requirements for PN8xy Products",
+        "[AID]": "User attribute definition (AID)",
+        "[17]": "). • (DRG.3.3) The RNG provides backward secrecy even if the current internal state is known (as defined in",
+        "[REFINED]": "",
+        "[41]": "(pdf) Document Common Criteria Requirements for PN8xy Products",
+        "[26]": "yes UICC Configuration Version 1.0.1",
+        "[19]": ", called GP. – Software that implements a proprietary programming interface, called Extension API. – Software that handles personalization and configuration, called Config Applet.",
+        "[29]": ". D.CONFIG_ITEM A configuration that can be changed using the Config Applet. D.ATTACK_COUNTER The Attack Counter is incremented when a potential attack is de- tected. When the Attack Counter reaches its limit, the card goes into restricted mode. D.TOE_IDENTIFIER Identification Data to identify the TOE.",
+        "[20]": "no UICC Configuration - Contactless Extension Version 1.0",
+        "[6]": "(Not for Customer use)",
+        "[8]": "). Installation (InstG) The InstG contains the security requirements concerning the in- stallation of post-issuance applications. It does not address card management issues in the broad sense, but only those security aspects of the installation procedure that are related to applet execution. Applet deletion (ADELG) The ADELG contains the security requirements for erasing in- stalled applets from the card, a feature introduced in Java Card specification version 2.2. Remote Method Invocation The RMIG contains the security requirements for the remote (RMIG) method invocation feature, which provides a new protocol of com- munication between the terminal and the applets. This was intro- duced in Java Card specification version 2.2. Object deletion (ODELG) The ODELG contains the security requirements for the object deletion capability. This provides a safe memory recovering mechanism. This is a Java Card specification version 2.2 fea- ture. Secure carrier (CarG) The CarG group contains minimal requirements for secure down- loading of applications on the card. This group contains the se- curity requirements for preventing, in those configurations that do not support on-card static or dynamic bytecode verification, the installation of a package that has not been bytecode verified, or that has been modified after bytecode verification. External Memory (EMG) The EMG group contains security requirements for the manage- ment of external memory.",
+        "[43]": "",
+        "[47]": ", §2.14, §2.7.7), as well as the length; the only methods of an array object are those inherited from the Object class. The Sharing attribute defines four categories of objects:",
+        "[4]": ", called JCVM and JCRE. – Software that implements the Java Card Application Programming Interface",
+        "[35]": "(pdf) Document Common Criteria Requirements for PN8xy Products",
+        "[1]": "]."
+    },
+    "table_of_contents": [],
+    "revisions": [
+        {
+            "version": "2.0",
+            "description": "Maintenance on JCOP -2.2 certified product",
+            "date": "2019-07-24"
+        },
+        {
+            "version": "2.1",
+            "description": "Align with Security Target",
+            "date": "2019-08-25"
+        },
+        {
+            "version": "2.2",
+            "description": "Add reference to P73.2C6 certification",
+            "date": "2020-01-08"
+        },
+        {
+            "version": "2.3",
+            "description": "P73.2C2 and P73.2C6 are combined in P73.2C2/2C6 certificate",
+            "date": "2020-01-09"
+        },
+        {
+            "version": "3.0",
+            "description": "Re-certification to add JCOP 4.8",
+            "date": "2020-08-26"
+        },
+        {
+            "version": "3.1",
+            "description": "Update guidance reference",
+            "date": "2020-09-01"
+        },
+        {
+            "version": "3.2",
+            "description": "Update guidance reference",
+            "date": "2020-09-04"
+        }
+    ]
+}

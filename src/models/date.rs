@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use regex::Regex;
 
 use crate::utils;

@@ -66,7 +66,7 @@ fn main() {
                     Err(err) => {
                         println!("{} {}", arg.as_str(), "\u{274c}");
                         match err {
-                            utils::Error::IOError(err) => { report_error!(err); }
+                            utils::Error::IoError(err) => { report_error!(err); }
                             utils::Error::Utf8ConversionError(err) => { report_error!(err); }
                             utils::Error::IsADirectory => { report_error!("this is a directory"); }
                             utils::Error::RegexError(_) => {}

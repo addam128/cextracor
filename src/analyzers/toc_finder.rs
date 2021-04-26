@@ -1,7 +1,5 @@
-use json::{JsonValue, array};
-use fancy_regex::{Regex, Error, Match};
-
-use std::collections::HashMap;
+use json::array;
+use fancy_regex::Regex;
 
 use crate::utils;
 
@@ -17,8 +15,7 @@ pub(crate) struct ToCFinder {
     _toc_start_found: bool,
     _toc_end_found: bool,
     _alternative: bool,
-    _found: Vec<json::JsonValue>,
-    _buffer: String // maybe unused
+    _found: Vec<json::JsonValue>
 
 }
 
@@ -37,8 +34,7 @@ impl ToCFinder {
                 _toc_start_found: false,
                 _toc_end_found: false,
                 _alternative: false,
-                _found: vec,
-                _buffer: String::new(),
+                _found: vec
             }
         )
     }
@@ -117,7 +113,6 @@ impl Analyzer for ToCFinder {
     }
 
     fn clear(&mut self){
-        self._buffer.clear();
         self._found.clear();
         self._toc_start_found = false;
         self._alternative = false;
