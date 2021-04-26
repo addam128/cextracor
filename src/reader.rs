@@ -48,7 +48,7 @@ pub(crate) fn read_and_process_chunks<I>(
                                     // because it is checked after each + byte this is kinda slow, but happens with probs x: lim x = 0
                                     // also the max iterations is at most 3 (max missing bytesfrom utf-8)
             if counter < 0 {
-                return Err(utils::Error::BadReadError)
+                return Err(utils::Error::BadRead)
             }
              match from_utf8(buffer[..bytes_read].as_ref()) {
                 Ok(slice) => { 

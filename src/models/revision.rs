@@ -24,14 +24,14 @@ impl Revision {
         }
 }
 
-impl Into<JsonValue> for Revision {
+impl From<Revision> for JsonValue {
 
-    fn into(self) -> JsonValue {
-
+    fn from(value: Revision) -> JsonValue {
+       
         json::object! {
-            version: self._version,
-            description: self._description,
-            date: self._date
+            version: value._version,
+            description: value._description,
+            date: value._date
         }
     }
 }

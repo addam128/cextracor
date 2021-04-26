@@ -49,33 +49,23 @@ impl Analyzer for ToCFinder {
             return Ok(())
         }
         if !self._toc_start_found {
-            match self._toc_start_regex.find(chunk) {
-                Ok(toc_start) => {
-                    match toc_start {
-                        Some(mat) => {
+            if let Ok(toc_start) =  self._toc_start_regex.find(chunk) {
+                match toc_start {
+                    Some(mat) => {
+                        self._toc_start_found = true;
+                        to_process= &chunk[mat.end()..];
+                    }
+                    None => {
+                        if let Ok(Some(mat)) = self._toc_start_regex_alternative.find(chunk) {
+
                             self._toc_start_found = true;
-                            // only process from matched bibliography in the current chunk
+                            self._alternative = true;
                             to_process= &chunk[mat.end()..];
+
                         }
-                        None => {
-                            match self._toc_start_regex_alternative.find(chunk) {
-                                Ok(toc_start) => {
-                                    match toc_start{
-                                        Some(mat) => {
-                                            self._toc_start_found = true;
-                                            self._alternative = true;
-                                            // only process from matched bibliography in the current chunk
-                                            to_process= &chunk[mat.end()..];
-                                        }
-                                        None => {}
-                                    }
-                                }
-                                Err(_) => {}
-                            }
-                        }
+                        
                     }
                 }
-                Err(_) => {}
             }
         }
 
@@ -93,14 +83,12 @@ impl Analyzer for ToCFinder {
             } else {
                 toc_entries = self._toc_entry_regex_alternative.captures_iter(to_process);
             }
-            for toc_entry in toc_entries {
-                if let Ok(cap) = toc_entry {
+            for cap in toc_entries.flatten() {
                     let index = cap.get(1).map_or("", |mat| mat.as_str()).trim();
                     let name = cap.get(2).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");
                     let page = cap.get(3).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");
                     let page_num = page.parse::<u32>().unwrap_or(0);
                     self._found.push(array![index, name, page_num]);
-                }
             }
         }
         Ok(())

@@ -23,11 +23,10 @@ impl DateFormatter {
 
     pub(crate) fn standardize(&self, original: &str)  -> String {
 
-        //println!("{}", original);
 
         let mut cap = self._date_decomposition_regex_one.captures(original);
 
-        if let None = cap {
+        if cap.is_none() {
             cap = self._date_decomposition_regex_two.captures(original);
         }
 

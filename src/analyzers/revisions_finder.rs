@@ -119,7 +119,7 @@ impl RevisionsFinder {
 
         loop {
             if counter > 3 {
-                return Err(utils::Error::BadReadError);
+                return Err(utils::Error::BadRead);
             }
 
             match from_utf8(&chunk.as_bytes()[start_pos..end_pos]) {
@@ -185,7 +185,7 @@ impl RevisionsFinder {
 
             }
 
-            if date == ""  && desc != "" {
+            if date.is_empty()  && !desc.is_empty() {
                     
                 if let Some(mat) = self._date_find_regex.find(desc.as_str()) {
 
@@ -195,7 +195,7 @@ impl RevisionsFinder {
 
         }
 
-        if id == "" { // if no version then simply dont output
+        if id.is_empty() { // if no version then simply dont output
             continue;
         }
 

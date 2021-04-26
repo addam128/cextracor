@@ -50,9 +50,9 @@ impl Analyzer for BibliographyFinder {
 
         if self._bibliography_start_found {
             let bibliography_entries = self._bibliography_entry_regex.captures_iter(to_process);
-            for bibliography_entry in bibliography_entries {
-                if let Ok(cap) = bibliography_entry {
-                    let key = cap.get(1).map_or("", |mat| mat.as_str());
+            for cap in bibliography_entries.flatten() {
+                    
+                let key = cap.get(1).map_or("", |mat| mat.as_str());
                     let value = cap.get(2).map_or("", |mat| mat.as_str()).trim().replace("\n", " ");
 
                     let formatted_value = self._whitespace_regex.replace_all(&value, " ");
@@ -60,7 +60,6 @@ impl Analyzer for BibliographyFinder {
                     if !self._found.contains_key(key) {
                         self._found.insert(String::from(key), String::from((&formatted_value).as_ref()));
                     }
-                }
             }
         }
         Ok(())
