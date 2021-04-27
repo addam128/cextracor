@@ -180,7 +180,6 @@ impl RevisionsFinder {
                     desc.push_str(part); // because description seems to be always after author, the for cycle naturally will put that in desc at the end of the for loop
                                 // however if trash is also collected(shouldnt be the case unless attack), this will yield something else than the description
                                 // but we dont care too much about results on malicious file
-                   // println!("{} : {}", desc, part);
                 }
 
             }
