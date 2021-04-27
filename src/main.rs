@@ -1,3 +1,4 @@
+
 mod reader;
 mod analyzers;
 mod serialization;
@@ -8,11 +9,13 @@ use std::env;
 use std::process;
 use std::collections::HashMap;
 
-use analyzers::traits::Analyzer;
+use analyzers::{revisions_finder::RevisionsFinder, traits::Analyzer};
 use analyzers::version_finder::VersionFinder;
 use analyzers::bibliography_finder::BibliographyFinder;
 use analyzers::title_finder::TitleFinder;
 use serialization::JsonSerializer;
+use crate::analyzers::toc_finder::ToCFinder;
+
 
 macro_rules! report_error {
     ($info: expr) => {
@@ -49,6 +52,8 @@ fn main() {
     analyzers.insert(String::from("versions"), Box::new(VersionFinder::new().expect("Could not compile regex."))); 
     analyzers.insert(String::from("title"), Box::new(TitleFinder::new().expect("Could not compile regex.")));
     analyzers.insert(String::from("bibliography"), Box::new(BibliographyFinder::new().expect("Could not compile regex.")));
+    analyzers.insert(String::from("revisions"), Box::new(RevisionsFinder::new().expect("Could not compile regex.")));
+    analyzers.insert(String::from("table_of_contents"), Box::new(ToCFinder::new().expect("Could not compile regex.")));
 
     let retval = 
         env::args()
@@ -57,18 +62,18 @@ fn main() {
             |arg: String| -> i32{
                 match process(arg.as_str(), &mut analyzers) {
                     Ok(_) => {
-                        println!("{} {}", arg.as_str(), "\u{2714}"); 
+                        println!("{} \u{2714}", arg.as_str()); 
                         0 
                     }
                     Err(err) => {
-                        println!("{} {}", arg.as_str(), "\u{274c}");
+                        println!("{} \u{274c}", arg.as_str());
                         match err {
-                            utils::Error::IOError(err) => { report_error!(err); }
-                            utils::Error::Utf8ConversionError(err) => { report_error!(err); }
+                            utils::Error::Io(err) => { report_error!(err); }
+                            utils::Error::Utf8Conversion(err) => { report_error!(err); }
                             utils::Error::IsADirectory => { report_error!("this is a directory"); }
-                            utils::Error::RegexError(_) => {}
-                            utils::Error::FancyRegexError(_) => {}
-                            utils::Error::BadReadError => {report_error!("could not get more bytes from Read")}
+                            utils::Error::Regex(_) => {}
+                            utils::Error::FancyRegex(_) => {}
+                            utils::Error::BadRead => {report_error!("could not get more bytes from Read")}
                             utils::Error::UserChoice => {report_error!("user chose not to overwrite existing file")}
                         }
                         1 

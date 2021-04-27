@@ -10,28 +10,28 @@ pub(crate) struct Revision {
 impl Revision {
    
     pub(crate) fn new(
-        version: &str,
-        description: &str,
-        date: &str)
+        version: String,
+        description: String,
+        date: String)
         -> Self {
 
             // TODO: if needed transform date into the right format
             Self {
-                _version: String::from(version),
-                _description: String::from(description),
-                _date: String::from(date)
+                _version: version,
+                _description: description,
+                _date: date
             }
         }
 }
 
-impl Into<JsonValue> for Revision {
+impl From<Revision> for JsonValue {
 
-    fn into(self) -> JsonValue {
-
+    fn from(value: Revision) -> JsonValue {
+       
         json::object! {
-            version: self._version,
-            description: self._description,
-            date: self._date
+            version: value._version,
+            description: value._description,
+            date: value._date
         }
     }
 }

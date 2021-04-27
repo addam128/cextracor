@@ -17,3 +17,5 @@ Cargo.lock
 # vscode
 .vscode/
 src/.vscode/
+fuzz_*.json
+fuzz_*.txt
