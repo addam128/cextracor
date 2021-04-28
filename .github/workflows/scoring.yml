@@ -1,0 +1,23 @@
+name: Scoring
+on: pull_request
+jobs:
+  score_job:
+    runs-on: ubuntu-latest
+    outputs:
+      score: ${{ steps.score_step.outputs.finalscore }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: score_step
+        run: bash ./test_scores.sh
+        working-directory: scoring
+  comment:
+    runs-on: ubuntu-latest
+    needs: score_job
+    steps:
+      - uses: actions/checkout@v2
+      - uses: thollander/actions-comment-pull-request@master
+        env:
+          score: ${{needs.score_job.outputs.score}}
+        with:
+          message: "Current score: ${{ env.score }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
